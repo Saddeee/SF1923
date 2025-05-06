@@ -1,8 +1,31 @@
+import random
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.stats import multivariate_normal
+
+
+w = [-1.2, 0.9] # Weights w1, w2
+x = np.linspace(-1, 1, 201)
+
+pairs = np.concatenate([w, x])
+
+z = np.array([1, 2, 3, 4])
+
+z = w[0] + z**w[1]
+
+z = np.random.normal(loc=z, scale=1.0, size=None)
+##z = z ** 2
+product = np.prod(z)
+
+print(product)
+
+
+
+
+
+
 
 # Our 2-dimensional distribution will be over variables X and Y
 N = 60
@@ -11,7 +34,7 @@ Y = np.linspace(-3, 4, N)
 X, Y = np.meshgrid(X, Y)
 
 # Mean vector and covariance matrix
-mu = np.array([0., 1.])
+mu = np.array([0., 3.])
 Sigma = np.array([[ 1. , -0.5], [-0.5,  1.5]])
 
 # Pack X and Y into a single 3-dimensional array
