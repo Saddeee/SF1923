@@ -223,6 +223,21 @@ plot(upper_bound, 0, 'g*')
 load moore.dat
 
 figure(6)
-w = moore(:, 1)
-length(w)
-ksdensity(w)
+w = moore(:, 2);
+length(w);
+
+logged = log(w);
+w1 = moore(:, 1);
+x = [ones(length(w1), 1), w1];
+%ksdensity(w)
+%ksdensity(logged)
+
+
+beta_hat = regress(w, x)
+
+% Problem 6: Regression
+res = w-x*beta_hat;
+subplot(2,1,1), normplot(res)
+subplot(2,1,2), hist(res)
+
+% Binominal fördelning?
