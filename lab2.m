@@ -177,7 +177,7 @@ hold off
 %
 %}
 
-
+%{
 % problem 5
 
 age = birth(:, 4)
@@ -218,3 +218,11 @@ plot(upper_bound, 0, 'g*')
 % 67.3471 till 222.0017, 
 % Vi vet alltså med säkerhet att barn med föräldrar som inte röker väger
 % något mer, dryga 144 g mer
+
+%}
+load moore.dat
+
+figure(6)
+w = moore(:, 1)
+length(w)
+ksdensity(w)
