@@ -1,10 +1,15 @@
-%{
+
+ 
+
+
 %% Problem 1: Simulering av konfidensintervall
+
+%{
 % Parametrar:
-n = 25000; %Antal matningar
+n = 25; %Antal matningar
 mu = 10; %Vantevardet
 sigma = 1; %Standardavvikelsen
-alpha = 0.005;
+alpha = 0.05;
 %Simulerar n observationer for varje intervall
 x = normrnd(mu, sigma,n,100); %n x 100 matris med varden
 %Skattar mu med medelvardet
@@ -26,9 +31,9 @@ disp(p/100)
 % µ?
 %med stor sannolikhet ligger mu i intervallet efter 100 försök
 %jag tror det fanns en sats som sa att när n-> infite går vi mot
-%konfidensgraden dvs 95%
+%konfidensgraden dvs 95% => 100 - 5 st?
 
-%% Problem 1: Simulering av konfidensintervall (forts.)
+% Problem 1: Simulering av konfidensintervall (forts.)
 %Ritar upp alla intervall
 figure(1)
 hold on
@@ -55,10 +60,10 @@ hold off
 %sjunker sannolikheten att den är i intervallet efter 100 försök. till
 %ungefär 50%. Om vi ökar antalet n så ser vi att vi förbättrar
 %sannolikehten och överenstämmer med sats.
+%}
 
-
-
-%% Problem 2: Maximum likelihood/Minsta kvadrat
+%{
+% Problem 2: Maximum likelihood/Minsta kvadrat
 M = 1e4;
 b = 4;
 x = raylrnd(b, M, 1);
@@ -75,17 +80,20 @@ plot(my_est_ml, 0, 'r*')
  hold off
 %skattning ser väldigt bra ut.
 
+%}
 
-
-%% Problem 3: Konfidensintervall for Rayleighfordelning
+%{
+% Problem 3: Konfidensintervall for Rayleighfordelning
 load wave_data.mat
 alfa=0.05;
 figure(1);
 my_est = mean(y)*(2/pi)^0.5;% Skriv in din MK-skattning har
-%subplot(2,1,1), plot(y(1:end))
+subplot(2,1,1), plot(y(1:end))
 subplot(2,1,2), hist_density(y)
-%% Problem 3: Konfidensintervall (forts.)
+
+% Problem 3: Konfidensintervall (forts.)
 standardav = (2/pi * 1/(length(y)) *(2-pi/2)*my_est^2)^0.5;
+% standardav = ( (4 - pi)*my_est) / (pi * (length(y)^0.5));
 interval = (my_est + tinv([alfa, (1-alfa)], length(y)-1)*standardav);
 lower_bound = interval(1,1)
 upper_bound = interval(1,2)
@@ -96,13 +104,17 @@ plot(0:0.1:6, raylpdf(0:0.1:6, my_est), 'r')
 hold off
 
 %fördelnign ser bra ut som svar på problem 3
-
+%}
+%{
 
 load birth.dat
 x= birth(birth(:, 20) < 3, 3);
 y = birth(birth(:,20) == 3, 3);
 
-%% Problem 4: Fordelningar av givna data (forts.)
+length(x)
+length(y)
+
+% Problem 4: Fordelningar av givna data (forts.)
 figure(1);
 subplot(2,2,1), boxplot(x),
 axis([0 2 500 5000])
@@ -110,7 +122,7 @@ subplot(2,2,2), boxplot(y),
 axis([0 2 500 5000])
 
 
-%% Problem 4: Fordelningar av givna data (forts.)
+% Problem 4: Fordelningar av givna data (forts.)
 subplot(2,2,3:4), ksdensity(x),
 hold on
 [fy, ty] = ksdensity(y);
@@ -126,28 +138,29 @@ hold off
 
 %intreesant att veta om alkohol påverkar
 
-%}
+
+
 
 %%problem 4 eget med alkhol
 
 
 load birth.dat
-x= birth(birth(:, 26) < 2, 3);
-y = birth(birth(:,26) == 2, 3);
+not_alko = birth(birth(:, 26) < 2, 3);
+alko = birth(birth(:,26) == 2, 3);
 
-%% Problem 4: Fordelningar av givna data (forts.)
-figure(1);
-subplot(2,2,1), boxplot(x),
+% Problem 4: Fordelningar av givna data (forts.)
+figure(2);
+subplot(2,2,1), boxplot(not_alko),
 axis([0 2 500 5000])
-subplot(2,2,2), boxplot(y),
+subplot(2,2,2), boxplot(alko),
 axis([0 2 500 5000])
 
 
-%% Problem 4: Fordelningar av givna data (forts.)
-subplot(2,2,3:4), ksdensity(x),
+% Problem 4: Fordelningar av givna data (forts.)
+subplot(2,2,3:4), ksdensity(not_alko),
 hold on
-[fy, ty] = ksdensity(y);
-plot(ty, fy, 'r')
+[fy, ty] = ksdensity(alko);
+plot(ty, fy, '-')
 hold off
 
 %vi ser från plotten likt förra att de som dricker är mer koncetrerat i
@@ -159,3 +172,49 @@ hold off
 %också större standardavvikelse men sannolikhet att du hamnar på en okej
 %viktig är större pga försjutknignen. Men det finns såklart risk att man
 %kan hamna i undervittiga delen men lägre än de som dricker.
+
+
+%
+%}
+
+
+% problem 5
+
+age = birth(:, 4)
+figure(3);
+subplot(2,2,3:4), ksdensity(age)
+
+h = jbtest(age,0.05)
+
+% Weight of mother
+w = birth(:, 15)
+figure(4);
+subplot(2,2,3:4), ksdensity(w)
+
+h2 = jbtest(w,0.05)
+% Seems like age is not normnally ditributed
+
+
+
+% Problem 6
+
+alfa = 0.05
+figure(5);
+good_parent = birth(birth(:, 20) < 3, 3)
+bad_parent = birth(birth(:, 20) == 3, 3)
+
+mean_diff = mean(good_parent) - mean(bad_parent) % Mean difference in expected length
+
+standardav = (std(bad_parent)^2 / length(bad_parent) + std(good_parent)^2 / length(good_parent))^0.5
+
+interval = (mean_diff + tinv([alfa, (1-alfa)], length(good_parent)-1)*standardav);
+lower_bound = interval(1,1)
+upper_bound = interval(1,2)
+hold on % Gor sa att ploten halls kvar
+plot(lower_bound, 0, 'g*')
+plot(upper_bound, 0, 'g*')
+
+% Alltså skillanden är typ 144.6744 med konfidensintervall 
+% 67.3471 till 222.0017, 
+% Vi vet alltså med säkerhet att barn med föräldrar som inte röker väger
+% något mer, dryga 144 g mer
