@@ -7,23 +7,49 @@ from scipy.stats import multivariate_normal
 
 
 w = [-1.2, 0.9] # Weights w1, w2
+
 x = np.linspace(-1, 1, 201)
 
 pairs = np.concatenate([w, x])
 
-z = np.array([1, 2, 3, 4])
+t = np.array([1, 2, 3, 4])
 
-z = w[0] + z**w[1]
-
-z = np.random.normal(loc=z, scale=1.0, size=None)
+t = w[0] + t**w[1]
+my = 0.0
+t = np.random.normal(loc= t - my, scale=1.0, size=None)
 ##z = z ** 2
-product = np.prod(z)
+product = np.prod(t)
 
 print(product)
 
 
+import math
+
+def normal_distribution(ti, mu, sigma):
+    """
+    Computes the value of the normal distribution N(ti | µ, σ).
+
+    Parameters:
+    ti (float): The input value.
+    mu (float): The mean of the distribution.
+    sigma (float): The standard deviation of the distribution.
+
+    Returns:
+    float: The value of the normal distribution at ti.
+    """
+    if sigma <= 0:
+        raise ValueError("Standard deviation (sigma) must be positive.")
+    
+    coefficient = 1 / (sigma * math.sqrt(2 * math.pi))
+    exponent = -0.5 * ((ti - mu) / sigma) ** 2
+    return coefficient * math.exp(exponent)
+
+# Example usage
+result = normal_distribution(ti=1.0, mu=0.0, sigma=1.0)
+print(f"Normal distribution value: {result}")
 
 
+prior = normal_distribution(ti=1.0, mu=0.0, sigma=1.0)
 
 
 
