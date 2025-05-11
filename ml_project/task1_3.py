@@ -8,17 +8,20 @@ beta = 25.0  # Likelihood precision (inverse of noise variance)
 mean_prior = np.array([0.0, 0.0])
 cov_prior = (1 / alpha) * np.eye(2)
 
-true_w = np.array([-1.2, 0.9])  # True weights
 
-# === Generate Synthetic Data ===
-x_all = np.linspace(-1, 1, 100)
-X_all = np.vstack((np.ones_like(x_all), x_all)).T  # Design matrix (100, 2)
-t_all = X_all @ true_w + np.random.normal(0, 1/np.sqrt(beta), size=x_all.shape)
+# Generate synthetic data
+x_input = np.arange(-1, 1.01, 0.01)  # Total 201 points
+true_w = np.array([-1.2, 0.9])       # True weights
+X_full = np.vstack((np.ones_like(x_input), x_input)).T  # Design matrix (201 x 2)
+# Generate synthetic data WITH NOISE
+noise = np.random.normal(loc=0, scale=np.sqrt(1/beta), size=len(x_input))
+t_full = X_full @ true_w + noise  # Add Gaussian noise
 
-# === Choose N samples for training ===
-N = 10 # len(x_all)  # Use all samples for this example
-X = X_all[:N]
-t = t_all[:N]
+# Select N training samples RANDOMLY
+N = 10
+indices = np.random.choice(len(X_full), size=N, replace=False)
+X = X_full[indices]
+t = t_full[indices]
 
 # === Grid over weight space ===
 w0 = np.linspace(-2, 2, 100)

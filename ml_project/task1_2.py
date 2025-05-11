@@ -21,12 +21,15 @@ cov = (1 / alpha) * np.eye(2)  # Prior covariance
 x_input = np.arange(-1, 1.01, 0.01)  # Total 201 points
 true_w = np.array([-1.2, 0.9])       # True weights
 X_full = np.vstack((np.ones_like(x_input), x_input)).T  # Design matrix (201 x 2)
-t_full = X_full @ true_w             # Targets (no noise for now)
+# Generate synthetic data WITH NOISE
+noise = np.random.normal(loc=0, scale=np.sqrt(1/beta), size=len(x_input))
+t_full = X_full @ true_w + noise  # Add Gaussian noise
 
-# Select N training samples
+# Select N training samples RANDOMLY
 N = 3
-X_train = X_full[:N]
-t_train = t_full[:N]
+indices = np.random.choice(len(X_full), size=N, replace=False)
+X_train = X_full[indices]
+t_train = t_full[indices]
 
 # Evaluate prior over w0 × w1 grid
 w0 = np.linspace(-2, 2, 100)
