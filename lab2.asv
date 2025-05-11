@@ -223,21 +223,21 @@ plot(upper_bound, 0, 'g*')
 load moore.dat
 
 figure(6)
-y = moore(:, 2);
-length(y);
+w = moore(:, 2);
+length(w);
 
-w = log(y);
-x = moore(:, 1);
-x_matrix = [ones(length(x), 1), x];
+logged = log(w);
+x_ = moore(:, 1);
+x = [ones(length(w1), 1), w1];
 %ksdensity(w)
 %ksdensity(logged)
 
 
-beta_hat = regress(w, x_matrix)
+beta_hat = regress(logged, x)
 
 % Problem 6: Regression
-res = w-x_matrix*beta_hat;
+res = logged-x*beta_hat;
 subplot(2,1,1), normplot(res)
 subplot(2,1,2), hist(res)
 
-% NormalFördelning?
+% Binominal fördelning?
