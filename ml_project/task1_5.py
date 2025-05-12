@@ -10,13 +10,15 @@ cov_prior = (1 / alpha) * np.eye(2)
 
 true_w = np.array([-1.2, 0.9])  # True weights
 
+N = 4 # len(x_all)  # Use all samples for this example
+
+
 # === Generate Synthetic Data ===
-x_all = np.linspace(-1, 1, 100)
+x_all = np.linspace(-1, 1, N)
 X_all = np.vstack((np.ones_like(x_all), x_all)).T  # Xest - Design matrix (100, 2)
 t_all = X_all @ true_w + np.random.normal(0, np.sqrt(0.2), size=x_all.shape)
 
 # === Choose N samples for training ===
-N = 100 # len(x_all)  # Use all samples for this example
 X = X_all[:N]
 t = t_all[:N]
 
@@ -55,7 +57,7 @@ Z_posterior = posterior.pdf(grid)
 # === Plot All Three Contours ===
 plt.figure(figsize=(10, 8))
 contour_prior = plt.contour(W0, W1, Z_prior, levels=10, cmap='Greens', linestyles='dotted')
-contour_likelihood = plt.contour(W0, W1, Z_likelihood, levels=10, cmap='Blues', linestyles='dashed')
+# contour_likelihood = plt.contour(W0, W1, Z_likelihood, levels=10, cmap='Blues', linestyles='dashed')
 contour_posterior = plt.contour(W0, W1, Z_posterior, levels=10, cmap='Reds')
 
 # Sample 5 random points from the posterior distribution
@@ -63,7 +65,7 @@ contour_posterior = plt.contour(W0, W1, Z_posterior, levels=10, cmap='Reds')
 curves = [posterior.rvs() for _ in range(5)] 
 
 plt.clabel(contour_prior, fontsize=8)
-plt.clabel(contour_likelihood, fontsize=8)
+# plt.clabel(contour_likelihood, fontsize=8)
 plt.clabel(contour_posterior, fontsize=8)
 
 plt.title(f'Prior (green dotted), Likelihood (blue dashed), Posterior (red)\nBased on N = {N} samples')
@@ -75,7 +77,7 @@ plt.axis('equal')
 plt.show()
 
 
-tests_all= np.linspace(-1.5, 1.5, 100)
+tests_all= np.linspace(-1.5, 1.5, 30)
 Test_all = np.vstack((np.ones_like(tests_all), tests_all)).T
 t_tests = Test_all @ true_w + np.random.normal(0, np.sqrt(0.2), size=tests_all.shape)
 
@@ -111,7 +113,7 @@ predictive_stds = []
 
 for x in x_all:
     phi_x = np.array([1, x])  # Design vector for input x
-    mean = phi_x @ m_N        # Predictive mean
+    mean = m_N.T @ phi_x        # Predictive mean
     variance = (1 / beta) + phi_x @ S_N @ phi_x.T  # Predictive variance
     predictive_means.append(mean)
     predictive_stds.append(np.sqrt(variance))
@@ -137,4 +139,4 @@ plt.grid(True)
 plt.savefig('predictive_error_bars.png')
 plt.show()
 
-plt.savefig('prediction.png')
+plt.savefig('prediction_task_1_5.png')

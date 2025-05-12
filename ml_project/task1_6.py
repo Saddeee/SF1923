@@ -10,13 +10,13 @@ cov_prior = (1 / alpha) * np.eye(2)
 
 true_w = np.array([-1.2, 0.9])  # True weights
 
-# === Generate Synthetic Data ===
-x_all = np.linspace(-1, 1, 100)
-X_all = np.vstack((np.ones_like(x_all), x_all)).T  # Xest - Design matrix (100, 2)
-t_all = X_all @ true_w + np.random.normal(0, np.sqrt(0.2), size=x_all.shape)
+N = 10 # len(x_all)  # Use all samples for this example
 
-# === Choose N samples for training ===
-N = 100 # len(x_all)  # Use all samples for this example
+# === Generate Synthetic Data ===
+x_all = np.linspace(-1, 1, N)
+X_all = np.vstack((np.ones_like(x_all), x_all)).T  # Xest - Design matrix (100, 2)
+t_all = X_all @ true_w + np.random.normal(0, np.sqrt(0.8), size=x_all.shape)
+
 X = X_all[:N]
 t = t_all[:N]
 
@@ -75,7 +75,7 @@ plt.axis('equal')
 plt.show()
 
 
-tests_all= np.linspace(-1.5, 1.5, 100)
+tests_all= np.linspace(-1.5, 1.5, 30)
 Test_all = np.vstack((np.ones_like(tests_all), tests_all)).T
 t_tests = Test_all @ true_w + np.random.normal(0, np.sqrt(0.2), size=tests_all.shape)
 
@@ -155,12 +155,17 @@ pos = np.dstack((W0, W1))
 # Evaluate the density at each point on the grid
 Z = prior.pdf(pos)
 
-plt.figure(figsize=(8, 6))
-contour = plt.contour(W0, W1, Z, levels=15, cmap='viridis')
-plt.clabel(contour, inline=1, fontsize=8)
+# plt.figure(figsize=(8, 6))
+# contour = plt.contour(W0, W1, Z, levels=15, cmap='viridis')
+# plt.clabel(contour, inline=1, fontsize=8)
 
 # Add the w_ml point to the plot
-plt.scatter(w_ml[0], w_ml[1], color='red', label='ML Estimate (w_ml)', zorder=5)
+# plt.scatter(w_ml[0], w_ml[1], color='red', label='ML Estimate (w_ml)', zorder=5)
+
+
+# Plot lines for each sampled weight
+y = w_ml[0] + w_ml[1] * x_all
+plt.plot(x_all, y, label=f"Sampled line: w0={w_ml[0]:.2f}, w1={w_ml[1]:.2f}", alpha=0.7)
 
 # Add title, labels, and legend
 plt.title('Contour Plot of Prior Distribution over $w_0$ and $w_1$ with ML Estimate')
@@ -171,4 +176,4 @@ plt.grid(True)
 plt.axis('equal')
 plt.show()
 
-plt.savefig('image1.png')
+plt.savefig('task_1_6.png')

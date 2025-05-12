@@ -22,7 +22,7 @@ x_input = np.arange(-1, 1.01, 0.01)  # Total 201 points
 true_w = np.array([-1.2, 0.9])       # True weights
 X_full = np.vstack((np.ones_like(x_input), x_input)).T  # Design matrix (201 x 2)
 # Generate synthetic data WITH NOISE
-noise = np.random.normal(loc=0, scale=np.sqrt(1/beta), size=len(x_input))
+noise = np.random.normal(loc=0, scale=np.sqrt(0.2), size=len(x_input))
 t_full = X_full @ true_w + noise  # Add Gaussian noise
 
 # Select N training samples RANDOMLY

@@ -10,13 +10,17 @@ cov_prior = (1 / alpha) * np.eye(2)
 
 true_w = np.array([-1.2, 0.9])  # True weights
 
+
+N = 4 # Number of training samples
+
 # === Generate Synthetic Data ===
-x_all = np.linspace(-1, 1, 100)
+x_all = np.linspace(-1, 1, N)
 X_all = np.vstack((np.ones_like(x_all), x_all)).T  # Design matrix (100, 2)
-t_all = X_all @ true_w + np.random.normal(0, np.sqrt(0.2), size=x_all.shape)
+noise = np.random.normal(loc=0, scale=np.sqrt(0.2), size=len(x_all))
+t_all = X_all @ true_w + noise  # Add Gaussian noise
 
 # === Choose N samples for training ===
-N = 100 # len(x_all)  # Use all samples for this example
+
 X = X_all[:N]
 t = t_all[:N]
 
@@ -62,7 +66,7 @@ contour_posterior = plt.contour(W0, W1, Z_posterior, levels=10, cmap='Reds')
 curves = [posterior.rvs() for _ in range(5)] 
 
 plt.clabel(contour_prior, fontsize=8)
-plt.clabel(contour_likelihood, fontsize=8)
+#plt.clabel(contour_likelihood, fontsize=8)
 plt.clabel(contour_posterior, fontsize=8)
 
 plt.title(f'Prior (green dotted), Likelihood (blue dashed), Posterior (red)\nBased on N = {N} samples')
@@ -74,7 +78,7 @@ plt.axis('equal')
 plt.show()
 
 
-tests_all= np.linspace(-1.5, 1.5, 100)
+tests_all= np.linspace(-1.5, 1.5, 30) # 30 test samples
 Test_all = np.vstack((np.ones_like(tests_all), tests_all)).T
 t_tests = Test_all @ true_w + np.random.normal(0, np.sqrt(0.2), size=tests_all.shape)
 
@@ -98,5 +102,5 @@ plt.ylabel("y")
 plt.legend(loc="upper left", fontsize=8)
 plt.grid(True)
 
-plt.savefig('posterior.png')
+plt.savefig('5curves.png')
 plt.show()
