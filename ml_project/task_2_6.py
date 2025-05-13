@@ -135,7 +135,7 @@ t_pred_train = X_all_train.T  @ w_ml
 mean_square_error_ml = sum((t_pred_train - t_all_train)**2) / len(t_pred_train)
 mean_square_error_baysian = sum((baysian_simplified_mean_predicited - t_all_train)**2) / len(t_pred_train)
 
-print("Mean for ml-skattning: " + str(mean_square_error_ml) + " Mean for bayesian: "+ str(mean_square_error_baysian))
+print("mse for ml-skattning: " + str(mean_square_error_ml) + " mse for bayesian: "+ str(mean_square_error_baysian))
 
 
 
@@ -153,7 +153,7 @@ baysian_simplified_mean_predicited_test = m_N_test.T @ X_all_test
 
 mean_square_error_baysian_test = sum((baysian_simplified_mean_predicited_test - t_all_test)**2) / len(t_all_test)
 
-print("Mean for bayesian test : "+ str(mean_square_error_baysian_test))
+print("mse for bayesian test : "+ str(mean_square_error_baysian_test))
 
 print("Variance baysian test: " + str(np.mean(variance_test)) + " Variance baysian train: " + str(np.mean(variance)))
 
