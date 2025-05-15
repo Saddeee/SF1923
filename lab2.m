@@ -175,43 +175,56 @@ hold off
 
 
 %
-%}
 
-%{
+
+
 % problem 5
 
 age = birth(:, 4)
 figure(3);
-subplot(2,2,3:4), ksdensity(age)
+subplot(2,2,3:4), qqplot(age)
 
-h = jbtest(age,0.05)
+
 
 % Weight of mother
-w = birth(:, 15)
+w = birth(:, 15);
 figure(4);
-subplot(2,2,3:4), ksdensity(w)
+subplot(2,2,3:4), qqplot(w)
 
-h2 = jbtest(w,0.05)
+
+[h_age, p_age] = jbtest(age, 0.05);
+[h_w,   p_w]   = jbtest(w,   0.05);
+%vi förkasar att age och weight när normalfördenalde
+fprintf('Age:    JB h = %d, p = %.4f\n', h_age, p_age)
+fprintf('Weight: JB h = %d, p = %.4f\n', h_w,   p_w)
+
+%}
+
+%{
 % Seems like age is not normnally ditributed
-
-
 
 % Problem 6
 
-alfa = 0.05
+alfa = 0.05;
 figure(5);
-good_parent = birth(birth(:, 20) < 3, 3)
-bad_parent = birth(birth(:, 20) == 3, 3)
+good_parent = birth(birth(:, 20) < 3, 3);
+bad_parent = birth(birth(:, 20) == 3, 3);
 
-mean_diff = mean(good_parent) - mean(bad_parent) % Mean difference in expected length
+mean_diff = mean(good_parent) - mean(bad_parent); % Mean difference in expected length stickprovsmedel
 
-standardav = (std(bad_parent)^2 / length(bad_parent) + std(good_parent)^2 / length(good_parent))^0.5
+%standardav = (std(bad_parent)^2 / length(bad_parent) + std(good_parent)^2 / length(good_parent))^0.5;
 
-interval = (mean_diff + tinv([alfa, (1-alfa)], length(good_parent)-1)*standardav);
-lower_bound = interval(1,1)
-upper_bound = interval(1,2)
+%om vi antar samma std
+viktadstandardav = ((((length(good_parent)-1)*std(good_parent)^2+(length(bad_parent)-1)*std(bad_parent)^2))/(length(good_parent)+length(bad_parent)-2));
+stdest= viktadstandardav*sqrt((1/(length(good_parent)+1/(length(bad_parent)))));
+
+freedom= length(good_parent)+length(bad_parent)-2;
+interval = (mean_diff + tinv([alfa, (1-alfa)], freedom)*standardav)
+lower_bound = interval(1,1);
+upper_bound = interval(1,2);
 hold on % Gor sa att ploten halls kvar
 plot(lower_bound, 0, 'g*')
+plot(mean_diff, 0, 'r*')
 plot(upper_bound, 0, 'g*')
 
 % Alltså skillanden är typ 144.6744 med konfidensintervall 
@@ -220,6 +233,8 @@ plot(upper_bound, 0, 'g*')
 % något mer, dryga 144 g mer
 
 %}
+
+
 load moore.dat
 
 figure(6)
@@ -234,10 +249,16 @@ x_matrix = [ones(length(x), 1), x];
 
 
 beta_hat = regress(w, x_matrix)
-
+y_tmp = x_matrix*beta_hat;
+plot(x,y_tmp)
 % Problem 6: Regression
 res = w-x_matrix*beta_hat;
 subplot(2,1,1), normplot(res)
 subplot(2,1,2), hist(res)
 
 % NormalFördelning?
+pred2025 =exp([1, 2025]*beta_hat);
+fprintf('predict transis 2025 is %d', pred2025);
+
+%2025 finns det: 1.359867e+08
+
